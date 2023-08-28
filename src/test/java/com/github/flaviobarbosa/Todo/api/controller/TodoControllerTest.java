@@ -48,11 +48,9 @@ public class TodoControllerTest {
   @Test
   @DisplayName("Given valid data, should create a Todo and return created (201)")
   public void shouldCreateTodo() throws Exception {
-    given(mapper.map(any(NewTodoDTO.class), eq(Todo.class)))
-        .willReturn(TODO_WITHOUT_ID);
-
-    given(todoService.create(any(Todo.class)))
-        .willReturn(TODO);
+    given(mapper.map(any(NewTodoDTO.class), eq(Todo.class))).willReturn(TODO_WITHOUT_ID);
+    given(todoService.create(any(Todo.class))).willReturn(TODO);
+    given(mapper.map(any(Todo.class), eq(TodoDTO.class))).willReturn(TODO_DTO);
 
     MockHttpServletRequestBuilder request =
         MockMvcRequestBuilders.post(URI)
@@ -62,7 +60,10 @@ public class TodoControllerTest {
     mvc.perform(request)
 //        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$").value(TODO))
+        .andExpect(jsonPath("id").value(TODO_DTO.getId()))
+        .andExpect(jsonPath("title").value(TODO_DTO.getTitle()))
+        .andExpect(jsonPath("description").value(TODO_DTO.getDescription()))
+        .andExpect(jsonPath("done").value(TODO_DTO.isDone()))
     ;
   }
 

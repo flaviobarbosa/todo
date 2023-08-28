@@ -25,10 +25,11 @@ public class TodoController {
   private final TodoService todoService;
 
   @PostMapping
-  public ResponseEntity<Todo> create(@RequestBody NewTodoDTO newTodoDTO) {
+  public ResponseEntity<TodoDTO> create(@RequestBody NewTodoDTO newTodoDTO) {
     Todo todo = mapper.map(newTodoDTO, Todo.class);
     todo = todoService.create(todo);
-    return ResponseEntity.status(CREATED).body(todo);
+    TodoDTO dto = mapper.map(todo, TodoDTO.class);
+    return ResponseEntity.status(CREATED).body(dto);
   }
 
   @GetMapping("/{id}")
