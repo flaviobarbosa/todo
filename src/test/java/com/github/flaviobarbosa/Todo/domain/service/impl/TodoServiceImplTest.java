@@ -2,13 +2,14 @@ package com.github.flaviobarbosa.Todo.domain.service.impl;
 
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_WITHOUT_ID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
-import com.github.flaviobarbosa.Todo.common.TodoConstants;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.repository.TodoRepository;
-import org.assertj.core.api.Assertions;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,12 +27,23 @@ class TodoServiceImplTest {
   private TodoRepository todoRepository;
 
   @Test
+  @DisplayName("Should create a Todo")
   public void shouldCreateTodo() {
     when(todoRepository.save(Mockito.any(Todo.class)))
-        .thenReturn(TodoConstants.TODO);
+        .thenReturn(TODO);
 
     Todo sut = todoService.create(TODO_WITHOUT_ID);
 
-    Assertions.assertThat(sut).isEqualTo(TODO);
+    assertThat(sut).isEqualTo(TODO);
+  }
+
+  @Test
+  @DisplayName("Should find Todo by id")
+  public void shouldFindTodoById() {
+    when(todoRepository.findById(anyInt())).thenReturn(Optional.of(TODO));
+
+    Todo sut = todoService.findById(1);
+
+    assertThat(sut).isEqualTo(TODO);
   }
 }
