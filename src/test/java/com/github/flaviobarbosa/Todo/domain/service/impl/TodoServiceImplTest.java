@@ -6,9 +6,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import com.github.flaviobarbosa.Todo.domain.exception.TodoNotFoundException;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.repository.TodoRepository;
 import java.util.Optional;
+import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,5 +47,12 @@ class TodoServiceImplTest {
     Todo sut = todoService.findById(1);
 
     assertThat(sut).isEqualTo(TODO);
+  }
+
+  @Test
+  @DisplayName("Should throw TodoNotFoundException when finding by nonexistent id")
+  public void shouldThrowTodoNotFoundExceptionForNonExistentId() {
+    when(todoRepository.findById(anyInt())).thenReturn(Optional.empty());
+    Assert.assertThrows(TodoNotFoundException.class, () -> todoService.findById(1));
   }
 }

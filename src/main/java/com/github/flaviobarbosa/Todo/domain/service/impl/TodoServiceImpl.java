@@ -1,5 +1,6 @@
 package com.github.flaviobarbosa.Todo.domain.service.impl;
 
+import com.github.flaviobarbosa.Todo.domain.exception.TodoNotFoundException;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.repository.TodoRepository;
 import com.github.flaviobarbosa.Todo.domain.service.TodoService;
@@ -19,6 +20,6 @@ public class TodoServiceImpl implements TodoService {
 
   @Override
   public Todo findById(int id) {
-    return todoRepository.findById(id).get();
+    return todoRepository.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
   }
 }
