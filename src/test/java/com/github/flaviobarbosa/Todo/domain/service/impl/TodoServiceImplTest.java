@@ -9,11 +9,18 @@ import static org.mockito.Mockito.when;
 import com.github.flaviobarbosa.Todo.domain.exception.TodoNotFoundException;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.repository.TodoRepository;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -54,5 +61,28 @@ class TodoServiceImplTest {
   public void shouldThrowTodoNotFoundExceptionForNonExistentId() {
     when(todoRepository.findById(anyInt())).thenReturn(Optional.empty());
     Assert.assertThrows(TodoNotFoundException.class, () -> todoService.findById(1));
+  }
+
+  @DisplayName("Should return all Todos")
+  @ParameterizedTest
+  @MethodSource
+  public void shouldReturnAllTodos(List<Todo> todoList) {
+    when(todoRepository.findAll()).thenReturn(todoList);
+
+    List<Todo> sut = todoService.findAll();
+
+    assertThat(sut.size()).isEqualTo(todoList.size());
+
+  }
+
+  private static Stream<Arguments> shouldReturnAllTodos() {
+    return Stream.of(
+        Arguments.of(Collections.emptyList()),
+        Arguments.of(Arrays.asList(
+            Todo.builder().id(1).title("Todo 1").description("Description 1").done(false).build(),
+            Todo.builder().id(2).title("Todo 2").description("Description 2").done(true).build(),
+            Todo.builder().id(3).title("Todo 3").description("Description 3").done(false).build()
+        ))
+    );
   }
 }

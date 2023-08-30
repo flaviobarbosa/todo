@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.flaviobarbosa.Todo.DatabaseTest;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,5 +55,13 @@ class TodoRepositoryTest extends DatabaseTest {
   public void givenNonexistentId_ShouldReturnOptionalEmpty() {
     Optional<Todo> optionalTodo = todoRepository.findById(10);
     assertThat(optionalTodo.isPresent()).isFalse();
+  }
+
+  @Test
+  @DisplayName("Should return all Todos")
+  public void shouldReturnAllTodos() {
+    List<Todo> todoList = todoRepository.findAll();
+    int NUMER_OF_IMPORTED_TODO = 5; //"/import_todos.sql"
+    assertThat(todoList.size()).isEqualTo(NUMER_OF_IMPORTED_TODO);
   }
 }

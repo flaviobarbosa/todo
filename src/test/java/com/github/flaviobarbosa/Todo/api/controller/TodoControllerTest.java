@@ -3,7 +3,9 @@ package com.github.flaviobarbosa.Todo.api.controller;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.NEW_TODO_DTO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_DTO;
+import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_LIST;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_WITHOUT_ID;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -111,7 +113,16 @@ public class TodoControllerTest {
   @Test
   @DisplayName("Should return all Todos")
   public void shouldReturnAllTodos() throws Exception {
+    given(todoService.findAll()).willReturn(TODO_LIST);
+    given(mapper.map(any(Todo.class), eq(TodoDTO.class))).willReturn(TODO_DTO);
 
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(URI)
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(TODO_LIST.size())))
+    ;
   }
 
   @Test

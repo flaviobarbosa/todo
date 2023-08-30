@@ -6,6 +6,8 @@ import com.github.flaviobarbosa.Todo.api.model.NewTodoDTO;
 import com.github.flaviobarbosa.Todo.api.model.TodoDTO;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.service.TodoService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +39,13 @@ public class TodoController {
     Todo todo = todoService.findById(id);
     TodoDTO dto = mapper.map(todo, TodoDTO.class);
     return ResponseEntity.ok(dto);
+  }
+
+  @GetMapping
+  public ResponseEntity<List<TodoDTO>> findAll() {
+    List<Todo> todos = todoService.findAll();
+    List<TodoDTO> dtoList = todos.stream().map((todo) -> mapper.map(todo, TodoDTO.class))
+        .collect(Collectors.toList());
+    return ResponseEntity.ok(dtoList);
   }
 }
