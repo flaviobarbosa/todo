@@ -1,0 +1,2 @@
+ALTER SEQUENCE todo_id_seq
+RESTART WITH 1;
