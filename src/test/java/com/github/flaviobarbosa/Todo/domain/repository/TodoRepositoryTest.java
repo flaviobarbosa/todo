@@ -17,8 +17,10 @@ import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Sql(scripts = {"/remove_todos.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(scripts = {"/import_todos.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/remove_todos.sql",},
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(scripts = {"/reset_sequence.sql", "/import_todos.sql"},
+    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class TodoRepositoryTest extends DatabaseTest {
 
   @Autowired
@@ -53,7 +55,7 @@ class TodoRepositoryTest extends DatabaseTest {
   @Test
   @DisplayName("Given a nonexistent id should return optional empty")
   public void givenNonexistentId_ShouldReturnOptionalEmpty() {
-    Optional<Todo> optionalTodo = todoRepository.findById(10);
+    Optional<Todo> optionalTodo = todoRepository.findById(-1);
     assertThat(optionalTodo.isPresent()).isFalse();
   }
 
