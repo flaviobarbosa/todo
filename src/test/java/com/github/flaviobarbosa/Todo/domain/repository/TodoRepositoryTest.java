@@ -63,7 +63,7 @@ class TodoRepositoryTest extends DatabaseTest {
   @DisplayName("Should return all Todos")
   public void shouldReturnAllTodos() {
     List<Todo> todoList = todoRepository.findAll();
-    int NUMER_OF_IMPORTED_TODO = 5; //"/import_todos.sql"
-    assertThat(todoList.size()).isEqualTo(NUMER_OF_IMPORTED_TODO);
+    int NUMBER_OF_IMPORTED_TODO = 5; //number of inserts from import_todos.sql
+    assertThat(todoList.size()).isEqualTo(NUMBER_OF_IMPORTED_TODO);
   }
 }
