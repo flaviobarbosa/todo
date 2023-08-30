@@ -10,4 +10,6 @@ public interface TodoService {
   Todo findById(int id);
 
   List<Todo> findAll();
+
+  void markAsDone(int id);
 }

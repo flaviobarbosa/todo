@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,5 +49,11 @@ public class TodoController {
     List<TodoDTO> dtoList = todos.stream().map((todo) -> mapper.map(todo, TodoDTO.class))
         .collect(Collectors.toList());
     return ResponseEntity.ok(dtoList);
+  }
+
+  @PutMapping("/{id}/done")
+  public ResponseEntity<Void> markAsDone(@PathVariable int id) {
+    todoService.markAsDone(id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

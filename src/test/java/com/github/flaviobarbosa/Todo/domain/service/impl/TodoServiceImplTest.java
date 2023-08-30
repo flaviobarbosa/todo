@@ -3,7 +3,10 @@ package com.github.flaviobarbosa.Todo.domain.service.impl;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_WITHOUT_ID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.flaviobarbosa.Todo.domain.exception.TodoNotFoundException;
@@ -84,5 +87,18 @@ class TodoServiceImplTest {
             Todo.builder().id(3).title("Todo 3").description("Description 3").done(false).build()
         ))
     );
+  }
+
+  @Test
+  @DisplayName("Should mark Todo as done")
+  public void shouldMarkTodoAsDone() {
+    Todo todo = Mockito.spy(TODO);
+    when(todoRepository.findById(anyInt())).thenReturn(Optional.of(todo));
+
+    todoService.markAsDone(todo.getId());
+
+    verify(todo, times(1)).markAsDone();
+    verify(todoRepository, times(1)).save(any(Todo.class));
+
   }
 }

@@ -28,4 +28,11 @@ public class TodoServiceImpl implements TodoService {
   public List<Todo> findAll() {
     return todoRepository.findAll();
   }
+
+  @Override
+  public void markAsDone(int id) {
+    Todo todo = this.findById(id);
+    todo.markAsDone();
+    todoRepository.save(todo);
+  }
 }

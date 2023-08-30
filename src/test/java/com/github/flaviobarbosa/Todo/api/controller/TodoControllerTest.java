@@ -11,6 +11,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -127,9 +129,14 @@ public class TodoControllerTest {
 
   @Test
   @DisplayName("Should mark Todo as done")
-  public void shouldMarkTodoAsDone() {
+  public void shouldMarkTodoAsDone() throws Exception {
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1/done");
+    mvc.perform(request).andExpect(status().isNoContent());
 
+    verify(todoService, times(1)).markAsDone(anyInt());
   }
+
+  //TODO mark as done nonexistent todo
 
   @Test
   @DisplayName("Should update Todo")
@@ -137,9 +144,13 @@ public class TodoControllerTest {
 
   }
 
+  //TODO update nonexistent todo
+
   @Test
   @DisplayName("Should delete Todo")
   public void shouldDeleteTodo() {
 
   }
+
+  //TODO delete nonexistent todo
 }

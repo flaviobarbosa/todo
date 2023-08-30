@@ -39,6 +39,10 @@ public class Todo {
   @Column(name = "done", nullable = false)
   private boolean done;
 
+  public void markAsDone() {
+    this.done = true;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

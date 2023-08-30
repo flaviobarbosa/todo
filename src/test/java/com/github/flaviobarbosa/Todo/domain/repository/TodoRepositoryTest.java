@@ -66,4 +66,16 @@ class TodoRepositoryTest extends DatabaseTest {
     int NUMBER_OF_IMPORTED_TODO = 5; //number of inserts from import_todos.sql
     assertThat(todoList.size()).isEqualTo(NUMBER_OF_IMPORTED_TODO);
   }
+
+  @Test
+  @DisplayName("Should mark Todo as done")
+  public void shouldMarkTodoAsDone() {
+    Todo todo = testEntityManager.find(Todo.class, 1);
+    todo.markAsDone();
+    todoRepository.saveAndFlush(todo);
+
+    Todo sut = testEntityManager.find(Todo.class, 1);
+
+    assertThat(sut.isDone()).isTrue();
+  }
 }
