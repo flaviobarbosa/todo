@@ -12,4 +12,6 @@ public interface TodoService {
   List<Todo> findAll();
 
   void markAsDone(int id);
+
+  Todo update(int id, Todo todo);
 }

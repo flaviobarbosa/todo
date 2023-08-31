@@ -56,4 +56,12 @@ public class TodoController {
     todoService.markAsDone(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<TodoDTO> update(@PathVariable int id, @RequestBody NewTodoDTO todoDTO) {
+    Todo todo = mapper.map(todoDTO, Todo.class);
+    Todo updatedTodo = todoService.update(id, todo);
+    TodoDTO updatedTodoDTO = mapper.map(updatedTodo, TodoDTO.class);
+    return ResponseEntity.ok(updatedTodoDTO);
+  }
 }

@@ -14,8 +14,13 @@ public class TodoConstants {
   public static final TodoDTO TODO_DTO = TodoDTO.builder().id(1).title("Title")
       .description("description").done(false).build();
 
+  public static final TodoDTO UPDATED_TODO_DTO = TodoDTO.builder().id(1).title("Title updated")
+      .description("Description updated").done(false).build();
+
   public static final Todo TODO_WITHOUT_ID = new Todo("Title", "Description");
   public static final Todo TODO = new Todo(1, "Title", "Description", false);
+  public static final Todo UPDATED_TODO = new Todo(1, "Title updated", "Description updated",
+      false);
 
   public static final List<Todo> TODO_LIST = Arrays.asList(
       new Todo(1, "Title 1", "Description 1", false),

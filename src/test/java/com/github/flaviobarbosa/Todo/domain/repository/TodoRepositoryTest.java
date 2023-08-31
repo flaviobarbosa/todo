@@ -78,4 +78,26 @@ class TodoRepositoryTest extends DatabaseTest {
 
     assertThat(sut.isDone()).isTrue();
   }
+
+  @Test
+  @DisplayName("Should update Todo")
+  public void shouldUpdateTodo() {
+    String updatedTitle = "Updated title";
+    String updatedDescription = "Updated description";
+    int primaryKey = 1;
+
+    Todo todo = testEntityManager.find(Todo.class, primaryKey);
+    todo.setTitle(updatedTitle);
+    todo.setDescription(updatedDescription);
+    todo.setDone(true);
+
+    todoRepository.saveAndFlush(todo);
+
+    Todo sut = testEntityManager.find(Todo.class, primaryKey);
+
+    assertThat(sut.getId()).isEqualTo(primaryKey);
+    assertThat(sut.getTitle()).isEqualTo(updatedTitle);
+    assertThat(sut.getDescription()).isEqualTo(updatedDescription);
+    assertThat(sut.isDone()).isTrue();
+  }
 }
