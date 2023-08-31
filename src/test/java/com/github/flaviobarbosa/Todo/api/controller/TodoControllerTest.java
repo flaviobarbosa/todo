@@ -136,7 +136,23 @@ public class TodoControllerTest {
     verify(todoService, times(1)).markAsDone(anyInt());
   }
 
-  //TODO mark as done nonexistent todo
+  @Test
+  @DisplayName("Given nonexistent id should return not found (404) when marking as done")
+  public void shouldThrowNotFoundWhenMarkingNonexistentTodoAsDone() throws Exception {
+    int id = 1;
+    doThrow(new TodoNotFoundException(id)).when(todoService).markAsDone(anyInt());
+
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1/done")
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("status").value(HttpStatus.NOT_FOUND.value()))
+        .andExpect(jsonPath("timestamp").isNotEmpty())
+        .andExpect(jsonPath("detail").value("Todo with id " + id + " not found"))
+    ;
+  }
 
   @Test
   @DisplayName("Should update Todo")

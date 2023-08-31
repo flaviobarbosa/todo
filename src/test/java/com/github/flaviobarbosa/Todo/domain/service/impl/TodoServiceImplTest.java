@@ -101,4 +101,12 @@ class TodoServiceImplTest {
     verify(todoRepository, times(1)).save(any(Todo.class));
 
   }
+
+  @Test
+  @DisplayName("Should throw error when marking a nonexistent Todo as done")
+  public void shouldThrowErrorWhenMarkingNonexistentTodoAsDone() {
+    when(todoRepository.findById(anyInt())).thenReturn(Optional.empty());
+    Assert.assertThrows(TodoNotFoundException.class, () -> todoService.markAsDone(1));
+
+  }
 }
