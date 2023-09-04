@@ -1,10 +1,13 @@
 package com.github.flaviobarbosa.Todo.api.controller;
 
+import static com.github.flaviobarbosa.Todo.common.TodoConstants.EMPTY_TODO_DTO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.NEW_TODO_DTO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_DTO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_LIST;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_WITHOUT_ID;
+import static com.github.flaviobarbosa.Todo.common.TodoConstants.UPDATED_TODO;
+import static com.github.flaviobarbosa.Todo.common.TodoConstants.UPDATED_TODO_DTO;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -14,6 +17,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -136,21 +140,100 @@ public class TodoControllerTest {
     verify(todoService, times(1)).markAsDone(anyInt());
   }
 
-  //TODO mark as done nonexistent todo
+  @Test
+  @DisplayName("Given nonexistent id should return not found (404) when marking as done")
+  public void shouldThrowNotFoundWhenMarkingNonexistentTodoAsDone() throws Exception {
+    int id = 1;
+    doThrow(new TodoNotFoundException(id)).when(todoService).markAsDone(anyInt());
+
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1/done")
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("status").value(HttpStatus.NOT_FOUND.value()))
+        .andExpect(jsonPath("timestamp").isNotEmpty())
+        .andExpect(jsonPath("detail").value("Todo with id " + id + " not found"))
+    ;
+  }
 
   @Test
   @DisplayName("Should update Todo")
-  public void shouldUpdateTodo() {
+  public void shouldUpdateTodo() throws Exception {
+    given(mapper.map(any(NewTodoDTO.class), eq(Todo.class))).willReturn(TODO_WITHOUT_ID);
+    given(todoService.update(anyInt(), any(Todo.class))).willReturn(UPDATED_TODO);
+    given(mapper.map(any(Todo.class), eq(TodoDTO.class))).willReturn(UPDATED_TODO_DTO);
 
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1")
+        .contentType(APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(TODO_DTO))
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("id").value(UPDATED_TODO_DTO.getId()))
+        .andExpect(jsonPath("title").value(UPDATED_TODO_DTO.getTitle()))
+        .andExpect(jsonPath("description").value(UPDATED_TODO_DTO.getDescription()))
+        .andExpect(jsonPath("done").value(UPDATED_TODO_DTO.isDone()))
+    ;
   }
 
-  //TODO update nonexistent todo
+  @Test
+  @DisplayName("Given nonexistent id should return not found (404) when updating Todo")
+  public void shouldThrowErrorWhenUpdatingNonexistentTodo() throws Exception {
+    given(mapper.map(any(NewTodoDTO.class), eq(Todo.class))).willReturn(TODO_WITHOUT_ID);
+
+    int id = 1;
+    doThrow(new TodoNotFoundException(1)).when(todoService).update(anyInt(), any(Todo.class));
+
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1")
+        .contentType(APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(TODO_DTO))
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("status").value(HttpStatus.NOT_FOUND.value()))
+        .andExpect(jsonPath("timestamp").isNotEmpty())
+        .andExpect(jsonPath("detail").value("Todo with id " + id + " not found"))
+    ;
+  }
 
   @Test
   @DisplayName("Should delete Todo")
-  public void shouldDeleteTodo() {
+  public void shouldDeleteTodo() throws Exception {
 
+    mvc.perform(delete(URI + "/1"))
+        .andExpect(status().isNoContent());
+
+    verify(todoService, times(1)).delete(anyInt());
   }
 
-  //TODO delete nonexistent todo
+  @Test
+  @DisplayName("Given invalid input to create Todo should return unprocessable entity (422)")
+  public void shouldReturnUnprocessableEntityForInvalidInputToCreateTodo() throws Exception {
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(URI)
+        .contentType(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(EMPTY_TODO_DTO));
+
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isUnprocessableEntity());
+  }
+
+  @Test
+  @DisplayName("Given invalid input to update Todo should return unprocessable entity (422)")
+  public void shouldReturnUnprocessableEntityForInvalidInputToUpdateTodo() throws Exception {
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1")
+        .contentType(APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(EMPTY_TODO_DTO))
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isUnprocessableEntity());
+  }
 }

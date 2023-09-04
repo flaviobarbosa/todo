@@ -35,4 +35,19 @@ public class TodoServiceImpl implements TodoService {
     todo.markAsDone();
     todoRepository.save(todo);
   }
+
+  @Override
+  public Todo update(int id, Todo todo) {
+    if (todoRepository.existsById(id)) {
+      todo.setId(id);
+      return todoRepository.save(todo);
+    }
+
+    throw new TodoNotFoundException(id);
+  }
+
+  @Override
+  public void delete(int id) {
+    todoRepository.deleteById(id);
+  }
 }

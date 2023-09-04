@@ -2,6 +2,7 @@ package com.github.flaviobarbosa.Todo.domain.service.impl;
 
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_WITHOUT_ID;
+import static com.github.flaviobarbosa.Todo.common.TodoConstants.UPDATED_TODO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -100,5 +101,41 @@ class TodoServiceImplTest {
     verify(todo, times(1)).markAsDone();
     verify(todoRepository, times(1)).save(any(Todo.class));
 
+  }
+
+  @Test
+  @DisplayName("Should throw error when marking a nonexistent Todo as done")
+  public void shouldThrowErrorWhenMarkingNonexistentTodoAsDone() {
+    when(todoRepository.findById(anyInt())).thenReturn(Optional.empty());
+    Assert.assertThrows(TodoNotFoundException.class, () -> todoService.markAsDone(1));
+  }
+
+  @Test
+  @DisplayName("Should update Todo")
+  public void shouldUpdateTodo() {
+    when(todoRepository.existsById(anyInt())).thenReturn(true);
+    when(todoRepository.save(any(Todo.class))).thenReturn(UPDATED_TODO);
+
+    Todo sut = todoService.update(TODO.getId(), TODO);
+
+    assertThat(sut.getId()).isEqualTo(UPDATED_TODO.getId());
+    assertThat(sut.getTitle()).isEqualTo(UPDATED_TODO.getTitle());
+    assertThat(sut.getDescription()).isEqualTo(UPDATED_TODO.getDescription());
+    assertThat(sut.isDone()).isEqualTo(UPDATED_TODO.isDone());
+  }
+
+  @Test
+  @DisplayName("Should throw error when updating a nonexistent Todo")
+  public void shouldThrowErrorWhenWhenUpdatingNonexistentTodo() {
+    when(todoRepository.existsById(anyInt())).thenReturn(false);
+    Assert.assertThrows(TodoNotFoundException.class, () -> todoService.update(TODO.getId(), TODO));
+  }
+
+  @Test
+  @DisplayName("Should delete Todo")
+  public void shouldDeleteTodo() {
+    todoService.delete(1);
+
+    verify(todoRepository, times(1)).deleteById(anyInt());
   }
 }
