@@ -45,4 +45,9 @@ public class TodoServiceImpl implements TodoService {
 
     throw new TodoNotFoundException(id);
   }
+
+  @Override
+  public void delete(int id) {
+    todoRepository.deleteById(id);
+  }
 }

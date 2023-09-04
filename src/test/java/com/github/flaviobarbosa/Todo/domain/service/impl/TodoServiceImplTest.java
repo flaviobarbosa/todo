@@ -130,4 +130,12 @@ class TodoServiceImplTest {
     when(todoRepository.existsById(anyInt())).thenReturn(false);
     Assert.assertThrows(TodoNotFoundException.class, () -> todoService.update(TODO.getId(), TODO));
   }
+
+  @Test
+  @DisplayName("Should delete Todo")
+  public void shouldDeleteTodo() {
+    todoService.delete(1);
+
+    verify(todoRepository, times(1)).deleteById(anyInt());
+  }
 }

@@ -16,6 +16,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -201,9 +202,15 @@ public class TodoControllerTest {
 
   @Test
   @DisplayName("Should delete Todo")
-  public void shouldDeleteTodo() {
+  public void shouldDeleteTodo() throws Exception {
 
+    mvc.perform(delete(URI + "/1"))
+        .andExpect(status().isNoContent());
+
+    verify(todoService, times(1)).delete(anyInt());
   }
 
   //TODO delete nonexistent todo
+
+  //TODO invalid input
 }
