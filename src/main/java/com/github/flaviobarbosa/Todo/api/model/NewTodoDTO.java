@@ -1,5 +1,6 @@
 package com.github.flaviobarbosa.Todo.api.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,7 +8,10 @@ import lombok.Data;
 @Data
 public class NewTodoDTO {
 
-    private String title;
-    private String description;
+  @NotBlank
+  private String title;
+
+  @NotBlank
+  private String description;
 
 }

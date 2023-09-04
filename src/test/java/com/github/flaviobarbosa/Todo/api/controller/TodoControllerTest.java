@@ -1,5 +1,6 @@
 package com.github.flaviobarbosa.Todo.api.controller;
 
+import static com.github.flaviobarbosa.Todo.common.TodoConstants.EMPTY_TODO_DTO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.NEW_TODO_DTO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO;
 import static com.github.flaviobarbosa.Todo.common.TodoConstants.TODO_DTO;
@@ -210,7 +211,29 @@ public class TodoControllerTest {
     verify(todoService, times(1)).delete(anyInt());
   }
 
-  //TODO delete nonexistent todo
+  @Test
+  @DisplayName("Given invalid input to create Todo should return unprocessable entity (422)")
+  public void shouldReturnUnprocessableEntityForInvalidInputToCreateTodo() throws Exception {
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(URI)
+        .contentType(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(EMPTY_TODO_DTO));
 
-  //TODO invalid input
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isUnprocessableEntity());
+  }
+
+  @Test
+  @DisplayName("Given invalid input to update Todo should return unprocessable entity (422)")
+  public void shouldReturnUnprocessableEntityForInvalidInputToUpdateTodo() throws Exception {
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(URI + "/1")
+        .contentType(APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(EMPTY_TODO_DTO))
+        .accept(APPLICATION_JSON);
+
+    mvc.perform(request)
+        .andDo(print())
+        .andExpect(status().isUnprocessableEntity());
+  }
 }

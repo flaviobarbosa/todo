@@ -7,6 +7,7 @@ import com.github.flaviobarbosa.Todo.api.model.NewTodoDTO;
 import com.github.flaviobarbosa.Todo.api.model.TodoDTO;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.service.TodoService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class TodoController {
   private final TodoService todoService;
 
   @PostMapping
-  public ResponseEntity<TodoDTO> create(@RequestBody NewTodoDTO newTodoDTO) {
+  public ResponseEntity<TodoDTO> create(@RequestBody @Valid NewTodoDTO newTodoDTO) {
     Todo todo = mapper.map(newTodoDTO, Todo.class);
     todo = todoService.create(todo);
     TodoDTO dto = mapper.map(todo, TodoDTO.class);
@@ -61,7 +62,8 @@ public class TodoController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<TodoDTO> update(@PathVariable int id, @RequestBody NewTodoDTO todoDTO) {
+  public ResponseEntity<TodoDTO> update(@PathVariable int id,
+      @RequestBody @Valid NewTodoDTO todoDTO) {
     Todo todo = mapper.map(todoDTO, Todo.class);
     Todo updatedTodo = todoService.update(id, todo);
     TodoDTO updatedTodoDTO = mapper.map(updatedTodo, TodoDTO.class);

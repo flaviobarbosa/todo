@@ -8,6 +8,8 @@ import java.util.List;
 
 public class TodoConstants {
 
+  public static final NewTodoDTO EMPTY_TODO_DTO = NewTodoDTO.builder().build();
+
   public static final NewTodoDTO NEW_TODO_DTO = NewTodoDTO.builder().title("Tile")
       .description("description").build();
 
