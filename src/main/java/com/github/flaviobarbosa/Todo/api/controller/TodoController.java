@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import com.github.flaviobarbosa.Todo.api.model.NewTodoDTO;
 import com.github.flaviobarbosa.Todo.api.model.TodoDTO;
+import com.github.flaviobarbosa.Todo.api.openapi.TodoControllerOpenApi;
 import com.github.flaviobarbosa.Todo.domain.model.Todo;
 import com.github.flaviobarbosa.Todo.domain.service.TodoService;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/todo")
 @RequiredArgsConstructor
-public class TodoController {
+public class TodoController implements TodoControllerOpenApi {
 
   private final ModelMapper mapper;
   private final TodoService todoService;
